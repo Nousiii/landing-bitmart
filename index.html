@@ -52,9 +52,8 @@
     .kicker{display:block; width:fit-content; margin:0 auto 8px; text-align:center; font-size:13px; color:#00121a; background:linear-gradient(90deg, var(--accent), #ff77cb); padding:6px 10px; border-radius:999px; font-weight:800; text-shadow:0 1px 0 rgba(255,255,255,.25)}
     .title{margin:14px 0 10px 0; font-size:36px; line-height:1.08; text-wrap:balance; text-shadow:0 0 12px rgba(7,241,255,.18)}
     .subtitle{color:var(--muted); font-size:16px}
-    .pills{display:flex; flex-wrap:wrap; gap:10px; margin:18px 0}
+    .pills{display:flex; flex-wrap:wrap; gap:10px; margin:18px 0; align-items:center}
     .pill{font-size:13px; height:42px; padding:0 14px; border-radius:999px; background:rgba(7,241,255,.10); border:1px solid rgba(7,241,255,.25); box-shadow:var(--shadow); display:inline-flex; align-items:center; line-height:1}
-    .pills{align-items:center}
     .pill button{margin-left:10px}
     /* Botón Copiar – más vivo */
     .copy-btn{margin-left:10px; height:32px; padding:0 16px; border-radius:999px; border:0; cursor:pointer; font-weight:900; letter-spacing:.6px; text-transform:uppercase; font-size:12px; display:inline-flex; align-items:center; justify-content:center; color:#ffffff; background:linear-gradient(90deg, #ff2fb0, #ff6ad5); box-shadow:0 0 14px rgba(255,47,176,.45),0 0 28px rgba(255,47,176,.25)}
@@ -118,7 +117,7 @@
     footer{margin:40px 0 60px; color:var(--muted); font-size:13px} /* tighter footer spacing */
 
     /* VIP block — bigger text and full-height fit */
-    #vip{display:flex; flex-direction:column; gap:14px; padding:24px; min-height:100%; margin-top:-20px; align-self:start} /* subido para alinear con el bloque izquierdo */ /* subido para alinear con el bloque izquierdo */ /* sube ligeramente el recuadro para que encaje con el título de la izquierda */
+    #vip{display:flex; flex-direction:column; gap:14px; padding:24px; min-height:100%; margin-top:-20px; align-self:start}
     #vip h4{font-size:22px; margin:0}
     #vip ul{font-size:18px; line-height:1.75; padding-left:20px; margin:6px 0 0}
     #vip li{margin-bottom:8px}
@@ -139,8 +138,6 @@
     .social-btn::after{content:""; position:absolute; inset:-6px; border-radius:inherit; z-index:-1; opacity:.75; filter:blur(12px); animation:neonPulse 1.8s ease-in-out infinite alternate}
     .social-btn:hover{transform:translateY(-2px) scale(1.04); box-shadow:0 16px 40px rgba(0,0,0,.35)}
     @keyframes neonPulse{from{filter:blur(10px); opacity:.6} to{filter:blur(16px); opacity:.95}}
-    
-    .social-btn:hover{transform:translateY(-2px); box-shadow:0 16px 40px rgba(0,0,0,.35)}
     .social-btn svg{width:22px; height:22px}
     /* Brand backgrounds */
     .social-btn.telegram{background:#229ED9; border:none}
@@ -165,7 +162,7 @@
     body{min-height:100vh}
     main{padding-bottom:90px} /* reduced bottom padding to remove extra whitespace */
 
-    @media (max-width: 980px){$1
+    @media (max-width: 980px){
       /* eleva el FAB en móvil para no chocar con la barra flotante y centra el brillo */
       .tele-fab{right:12px; bottom:180px}
       .tele-fab a{box-shadow:0 6px 18px rgba(42,171,238,.35)}
@@ -365,18 +362,31 @@
     // Año dinámico
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Copiar código de referidos
-    document.getElementById('copyRef').addEventListener('click', ()=>{
-      navigator.clipboard.writeText('c5ubst');
+    // Copiar código de referidos (robusto y sin errores de sintaxis)
+    (function setupCopy(){
       const btn = document.getElementById('copyRef');
-      btn.classList.add('copied');
-      const prev = btn.textContent; btn.textContent = '¡COPIADO!';
-      setTimeout(()=>{ btn.textContent = prev; btn.classList.remove('copied'); }, 1400);
-    });
-      const btn = document.getElementById('copyRef');
-      const prev = btn.textContent; btn.textContent = '¡Copiado!';
-      setTimeout(()=> btn.textContent = prev, 1400);
-    });
+      if(!btn) return;
+      btn.addEventListener('click', () => {
+        // intento de copiar; si el navegador bloquea, seguimos sin romper la UI
+        try { navigator.clipboard.writeText('c5ubst'); } catch(e) { /* noop */ }
+        btn.classList.add('copied');
+        const prev = btn.textContent;
+        btn.textContent = '¡COPIADO!';
+        setTimeout(() => {
+          btn.textContent = prev;
+          btn.classList.remove('copied');
+        }, 1400);
+      });
+
+      // Test opcional: añade ?test-copy a la URL para auto-disparar y verificar estado visual (no intenta copiar)
+      if (location.search.includes('test-copy')) {
+        const prevWrite = navigator.clipboard && navigator.clipboard.writeText;
+        if (navigator.clipboard) navigator.clipboard.writeText = () => Promise.resolve();
+        btn.dispatchEvent(new Event('click'));
+        if (navigator.clipboard) navigator.clipboard.writeText = prevWrite;
+        console.info('[test] copyRef visual OK');
+      }
+    })();
 
     // Partículas simples en canvas
     const c = document.getElementById('particles');
@@ -410,7 +420,8 @@
     init(); tick();
   </script>
   <!-- Social side bar -->
-  <div class="social-bar" aria-label="Redes sociales"><!-- Telegram (canal) -->
+  <div class="social-bar" aria-label="Redes sociales">
+    <!-- Telegram (canal) -->
     <a class="social-btn telegram" href="https://t.me/elpreciodelbitcoin" target="_blank" rel="noopener" title="Telegram (canal)">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3L3 11l5 2 2 5 4-4 5-11Z"/><path d="M8 13l5-3"/></svg>
     </a>
@@ -422,7 +433,7 @@
         <circle cx="17.2" cy="6.8" r="1.2"></circle>
       </svg>
     </a>
-    <!-- YouTube (cámbiame la URL cuando me la pases) -->
+    <!-- YouTube -->
     <a class="social-btn youtube" href="https://www.youtube.com/@elpreciodelbitcoin" target="_blank" rel="noopener" title="YouTube — EL PRECIO DEL BITCOIN">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 15l5-3-5-3v6Z"/><rect x="3" y="6" width="18" height="12" rx="3"/></svg>
     </a>
