@@ -151,7 +151,7 @@
     .social-btn.x::after{background:radial-gradient(closest-side, rgba(255,255,255,.5), transparent 70%)}
 
     /* Partículas */
-    canvas#particles{position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.3}
+    canvas#particles{position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.28}
     main, header, footer{position:relative; z-index:1}
     body{min-height:100vh}
     main{padding-bottom:90px}
@@ -436,36 +436,181 @@
       }
     })();
 
-    // Partículas simples en canvas
-    const c = document.getElementById('particles');
-    const ctx = c.getContext('2d');
-    let W,H,particles=[]; const COUNT = 80;
-    function resize(){ W = c.width = innerWidth; H = c.height = innerHeight; }
-    addEventListener('resize', resize); resize();
-    function init(){
-      particles = Array.from({length:COUNT}, ()=>({
-        x: Math.random()*W,
-        y: Math.random()*H,
-        r: Math.random()*2 + .6,
-        vx: (Math.random()-.5)*.25,
-        vy: (Math.random()-.5)*.25,
-        hue: Math.random()<.5 ? 185 : 320
-      }));
-    }
-    function tick(){
-      ctx.clearRect(0,0,W,H);
-      for(const p of particles){
-        p.x += p.vx; p.y += p.vy;
-        if(p.x<0||p.x>W) p.vx*=-1;
-        if(p.y<0||p.y>H) p.vy*=-1;
-        const g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*6);
-        g.addColorStop(0, `hsla(${p.hue}, 100%, 60%, .8)`);
-        g.addColorStop(1, 'transparent');
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*6,0,Math.PI*2); ctx.fill();
+    // Fondo animado: velas de trading (OHLC) en canvas
+    (function marketBackground(){
+      const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const c = document.getElementById('particles');
+      const ctx = c.getContext('2d');
+
+      let W, H; const DPR = Math.min(devicePixelRatio || 1, 2);
+      const CANDLE_W = 16;          // ancho del cuerpo (px base) — estilo chart clásico
+      const GAP = 6;                // separación entre velas
+      const SPEED = prefersReduced ? 0 : 0.7; // px/frame — suave
+      const GRID = 72;              // separación grilla
+      const MIN_BODY = 18 * DPR;   // alto mínimo del cuerpo (px) para evitar dojis continuos
+      const BAND_FRAC = 0.52;    // altura relativa del "canal" central (0..1)
+
+      let cols = 0;
+      let candles = []; // {x, o, h, l, c}
+      let trend = 0;     // sesgo direccional suave
+
+      function resize(){
+        W = c.width  = Math.floor(innerWidth  * DPR);
+        H = c.height = Math.floor(innerHeight * DPR);
+        c.style.width  = innerWidth + 'px';
+        c.style.height = innerHeight + 'px';
+        cols = Math.ceil(W / ((CANDLE_W + GAP) * DPR)) + 3;
+        seed();
       }
-      requestAnimationFrame(tick);
-    }
-    init(); tick();
+
+      function seed(){
+        candles = [];
+        trend = (Math.random() - .5) * 2 * DPR; // arranque con leve sesgo
+        let price = H * 0.55; // precio base
+        for(let i=0;i<cols;i++){
+          const cnd = makeCandle(price);
+          cnd.x = W - i * (CANDLE_W + GAP) * DPR;
+          price = cnd.c;
+          candles.unshift(cnd);
+          tickTrend();
+        }
+      }
+
+      function tickTrend(){
+        // Drift pequeño + momentum: crea rachas de subidas/bajadas
+        trend += rand(-0.35, 0.35) * DPR;
+        // límites para que no se dispare
+        trend = Math.max(-6*DPR, Math.min(6*DPR, trend));
+        // de vez en cuando, cambio de régimen
+        if (Math.random() < 0.02) trend *= -0.6;
+      }
+
+      function makeCandle(open){
+        // Velas tipo chart clásico pero futuristas; cuerpo visible, doji ocasional.
+        const baseRange = rand(40, 140) * DPR;         // rango potencial
+        const isDoji    = Math.random() < 0.05;        // ~5% doji
+        const minBodyPx = 16 * DPR;                    // cuerpo mínimo visible
+        const maxBodyPx = baseRange * 0.7;             // límite superior
+
+        // magnitud del cuerpo
+        let bodyAbs = isDoji ? rand(0, 3*DPR) : rand(minBodyPx, maxBodyPx);
+        // dirección: sesgo por tendencia
+        const upBias = 0.5 + Math.max(-0.18, Math.min(0.18, trend/(10*DPR)));
+        const dir = Math.random() < upBias ? 1 : -1;
+        const body = dir * bodyAbs;
+
+        // cierre con contribución de tendencia (para rachas)
+        let close = open + body + trend * rand(0.5, 1.1);
+
+        // mechas moderadas
+        let wickRangeTop = rand(baseRange*0.06, baseRange*0.22);
+        let wickRangeBot = rand(baseRange*0.06, baseRange*0.22);
+        let high  = Math.max(open, close) + wickRangeTop;
+        let low   = Math.min(open, close)  - wickRangeBot;
+
+        // === Mantener las velas "paseando" por el centro ===
+        const center = H * 0.5;
+        const halfBand = (H * BAND_FRAC) / 2; // banda vertical
+        const topLim   = center - halfBand;
+        const botLim   = center + halfBand;
+        // clamp suave de O, C, H, L
+        let o = Math.max(topLim, Math.min(botLim, open));
+        let c = Math.max(topLim, Math.min(botLim, close));
+        let h = Math.max(topLim, Math.min(botLim, high));
+        let l = Math.max(topLim, Math.min(botLim, low));
+        // reordenar por seguridad
+        h = Math.max(h, o, c);
+        l = Math.min(l, o, c);
+        return { x:0, o:o, h:h, l:l, c:c };
+      }
+
+      function rand(min,max){ return Math.random()*(max-min)+min; }
+
+      function drawGrid(){
+        ctx.save();
+        ctx.clearRect(0,0,W,H);
+        ctx.lineWidth = 1 * DPR;
+        // verticales
+        ctx.strokeStyle = 'rgba(168, 238, 255, .06)';
+        for(let x=0; x<W; x+=GRID*DPR){
+          ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+        }
+        // horizontales
+        ctx.strokeStyle = 'rgba(255, 47, 176, .05)';
+        for(let y=0; y<H; y+=GRID*DPR){
+          ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      function drawCandle(c){
+        // Determinar si cierra por encima/abajo solo para color; NO usarlo para posiciones
+        const bull = c.c >= c.o;
+        const x = c.x;
+        const w = CANDLE_W * DPR;
+
+        // Top/bottom reales en coordenadas canvas (y crece hacia abajo)
+        let top = Math.min(c.o, c.c);
+        let bot = Math.max(c.o, c.c);
+        // Enforce cuerpo mínimo visible
+        let h = bot - top;
+        if (h < MIN_BODY){
+          const mid = (top + bot) / 2;
+          top = mid - MIN_BODY/2;
+          bot = mid + MIN_BODY/2;
+          h = MIN_BODY;
+        }
+
+        // colores NEON (cian alcista, magenta bajista)
+        const wickCol = bull ? 'rgba(7,241,255,.55)' : 'rgba(255,47,176,.55)';
+        const bodyCol = bull ? 'rgba(7,241,255,.92)' : 'rgba(255,47,176,.92)';
+
+        // mecha
+        ctx.strokeStyle = wickCol; ctx.lineWidth = 1.2 * DPR;
+        ctx.beginPath(); ctx.moveTo(x, c.h); ctx.lineTo(x, c.l); ctx.stroke();
+
+        // cuerpo
+        ctx.fillStyle = bodyCol;
+        ctx.fillRect(x - w/2, top, w, h);
+
+        // glow suave
+        const midY = (top + bot)/2;
+        const g = ctx.createRadialGradient(x, midY, 0, x, midY, Math.max(12*DPR, h));
+        g.addColorStop(0, bull ? 'rgba(7,241,255,.12)' : 'rgba(255,47,176,.12)');
+        g.addColorStop(1, 'transparent');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, midY, Math.max(12*DPR, h), 0, Math.PI*2); ctx.fill();
+      }
+
+      function step(){
+        drawGrid();
+        // mover velas
+        for(let i=0;i<candles.length;i++){
+          candles[i].x -= SPEED * DPR;
+        }
+        // reciclar la primera si sale de pantalla
+        if(candles.length && candles[0].x < -20*DPR){
+          candles.shift();
+        }
+        // añadir nuevas a la derecha manteniendo separación
+        const lastX = candles.length ? candles[candles.length-1].x : 0;
+        if(lastX < W - (CANDLE_W + GAP) * DPR){
+          const prev = candles.length ? candles[candles.length-1].c : H*0.55;
+          tickTrend();
+          const n = makeCandle(prev);
+          n.x = lastX + (CANDLE_W + GAP) * DPR;
+          candles.push(n);
+        }
+        // dibujar
+        for(const cdl of candles){ drawCandle(cdl); }
+        if(!prefersReduced) requestAnimationFrame(step);
+      }
+
+      function init(){ resize(); }
+      addEventListener('resize', resize);
+      init();
+      if(prefersReduced){ drawGrid(); candles.forEach(drawCandle); }
+      else { requestAnimationFrame(step); }
+    })();
   </script>
   <!-- Social side bar -->
   <div class="social-bar" aria-label="Redes sociales">
