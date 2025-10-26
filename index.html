@@ -157,14 +157,66 @@
     main{padding-bottom:90px}
 
     /* ====== SOLO MÓVIL ====== */
-    @media (max-width: 980px){$1/* Redes sociales reubicadas para no tapar CTA */
-      .social-bar{display:flex; position:fixed; left:12px; right:auto; top:auto; bottom:calc(220px + env(safe-area-inset-bottom, 0px)); transform:none; flex-direction:row; flex-wrap:nowrap; gap:12px; z-index:55}
+    @media (max-width: 980px){
+      /* --- NO TOCA ESCRITORIO --- */
+      .wrap{padding:16px}
+      header .row{flex-wrap:wrap; gap:10px}
+      .logo img{height:72px}
+      nav{width:100%; display:flex; gap:8px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:6px}
+      nav .btn{padding:10px 12px; font-size:12px}
+
+      /* Hero a una columna */
+      .hero{grid-template-columns:1fr; gap:16px; align-items:stretch; margin-top:12px}
+      .hero .card{padding:18px}
+      .kicker{font-size:12px}
+      .title{font-size:28px; line-height:1.2}
+      .subtitle{font-size:14px}
+      .cta-row .btn{width:100%}
+
+      /* Píldoras y botón Copiar */
+      .pills{gap:8px}
+      .pill{width:100%; height:40px; justify-content:center}
+      .copy-btn{height:34px}
+
+      /* Recuadro derecho del hero */
+      .hero .card:last-child .neon-box{padding:18px}
+      .hero .card:last-child .neon-box .neon-title{font-size:20px}
+      .hero .card:last-child .neon-box ul{font-size:16px; line-height:1.7; padding-left:18px}
+      .btn-wide,.hero .card:last-child .btn{width:100%}
+
+      /* Grids inferiores a 1 columna */
+      .grid-2{grid-template-columns:1fr; gap:14px}
+      .grid-3{grid-template-columns:1fr; gap:14px}
+      #vip{margin-top:0; padding:18px}
+      #vip h4{font-size:18px}
+      #vip ul{font-size:16px; line-height:1.7}
+
+      /* Tablas responsivas */
+      table{display:block; width:100%}
+      thead, tbody, tr, th, td{white-space:nowrap}
+      .panel > div[style*="overflow:auto"]{overflow:auto}
+
+      /* Badges centrados y sin cortes */
+      .badge{display:block; width:100%; text-align:center; white-space:normal; line-height:1.5; padding:10px 12px}
+
+      /* Barra flotante inferior */
+      .floating-cta{left:12px; right:12px; bottom:calc(12px + env(safe-area-inset-bottom, 0px))}
+      .floating-cta .bar{padding:10px; gap:8px; flex-direction:column; align-items:stretch}
+      .floating-cta .bar > div{width:100%}
+      .floating-cta .bar .btn{flex:1}
+
+      /* Redes sociales en móvil: NO superponer la barra de bonos */
+      .social-bar{display:flex; position:fixed; left:12px; right:auto; top:auto; bottom:calc(156px + env(safe-area-inset-bottom, 0px)); transform:none; flex-direction:row; flex-wrap:nowrap; gap:12px; z-index:55}
       .social-btn{width:44px; height:44px}
 
-      /* FAB de Telegram compacto (icono solo) */
+      /* Botón flotante de Telegram compacto (icono solo), encima de redes */
+      .tele-fab{right:12px; bottom:calc(104px + env(safe-area-inset-bottom, 0px)); z-index:58}
       .tele-fab a{padding:12px; min-width:52px; width:52px; height:52px; border-radius:999px; justify-content:center}
       .tele-fab .label{display:none}
       .tele-fab .icon{font-size:20px; line-height:1}
+
+      /* Footer */
+      footer{margin:28px 0 44px}
     }
   </style>
 </head>
