@@ -206,11 +206,11 @@
       .floating-cta .bar .btn{flex:1}
 
       /* Redes sociales en móvil: NO superponer la barra de bonos */
-      .social-bar{display:flex; position:fixed; left:12px; right:auto; top:auto; bottom:calc(156px + env(safe-area-inset-bottom, 0px)); transform:none; flex-direction:row; flex-wrap:nowrap; gap:12px; z-index:55}
+      .social-bar{display:none !important}
       .social-btn{width:44px; height:44px}
 
       /* Botón flotante de Telegram compacto (icono solo), encima de redes */
-      .tele-fab{right:12px; bottom:calc(104px + env(safe-area-inset-bottom, 0px)); z-index:58}
+      .tele-fab{right:12px; top:84px; bottom:auto; z-index:65}
       .tele-fab a{padding:12px; min-width:52px; width:52px; height:52px; border-radius:999px; justify-content:center}
       .tele-fab .label{display:none}
       .tele-fab .icon{font-size:20px; line-height:1}
