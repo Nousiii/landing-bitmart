@@ -34,7 +34,7 @@
     header{position:sticky; top:0; z-index:50; backdrop-filter:saturate(120%) blur(8px); background:linear-gradient(180deg, rgba(6,10,23,.85), rgba(6,10,23,.55)); border-bottom:1px solid rgba(120,160,220,.12)}
     header .row{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap}
     .logo{display:flex; align-items:center; gap:12px}
-    .logo img{height:80px; width:auto; border-radius:12px; box-shadow:var(--shadow)}
+    .logo img{height:110px; width:auto; border-radius:12px; box-shadow:var(--shadow)}
     .logo h1{display:none}
 
     .btn{display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:14px 18px; border-radius:12px; font-weight:800; letter-spacing:.3px; transition:.18s ease; border:1px solid transparent}
@@ -107,8 +107,14 @@
       .grid-3{grid-template-columns:1fr}
       .grid-2{grid-template-columns:1fr}
       .title{font-size:30px}
-      .logo img{height:48px}
+      .logo img{height:64px}
       nav{width:100%; display:flex; gap:8px; flex-wrap:wrap}
+      /* Fix mobile layout for badge + CTA + Telegram */
+      .badge{display:block; white-space:normal; line-height:1.5; padding:10px 12px}
+      .floating-cta{inset:auto 12px 12px 12px}
+      .floating-cta .bar{flex-direction:column; align-items:stretch; gap:10px}
+      .floating-cta .bar .btn{width:100%; justify-content:center}
+      .tele-fab{right:12px; bottom:180px}
     }
   </style>
 </head>
@@ -117,7 +123,7 @@
   <header>
     <div class="wrap row">
       <div class="logo" aria-label="EL PRECIO DEL BITCOIN">
-        <img src="https://i.ibb.co/CpJ8pskT/channels4-profile.jpg" alt="Logo EL PRECIO DEL BITCOIN" style="height:80px;width:auto;border-radius:12px;box-shadow:var(--shadow)" />
+        <img src="https://i.ibb.co/CpJ8pskT/channels4-profile.jpg" alt="Logo EL PRECIO DEL BITCOIN" style="height:110px;width:auto;border-radius:12px;box-shadow:var(--shadow)" />
       
       </div>
       <nav>
