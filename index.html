@@ -32,10 +32,13 @@
     a{color:inherit; text-decoration:none}
     .wrap{max-width:1100px; margin:0 auto; padding:24px}
     header{position:sticky; top:0; z-index:50; backdrop-filter:saturate(120%) blur(8px); background:linear-gradient(180deg, rgba(6,10,23,.85), rgba(6,10,23,.55)); border-bottom:1px solid rgba(120,160,220,.12)}
-    header .row{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap}
+    header .row{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:nowrap}
     .logo{display:flex; align-items:center; gap:12px}
     .logo img{height:110px; width:auto; border-radius:12px; box-shadow:var(--shadow)}
     .logo h1{display:none}
+
+    /* Mantener los botones a la derecha del logo en desktop */
+    nav{display:flex; gap:12px; align-items:center; margin-left:auto}
 
     .btn{display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:14px 18px; border-radius:12px; font-weight:800; letter-spacing:.3px; transition:.18s ease; border:1px solid transparent}
     .btn-primary{background:linear-gradient(90deg, var(--brand), #59f7ff); color:#00121a; box-shadow:var(--shadow)}
@@ -43,23 +46,41 @@
     .btn-ghost{background:rgba(255,255,255,.04); border-color:rgba(255,255,255,.1)}
     .btn-ghost:hover{background:rgba(255,255,255,.07)}
 
-    .hero{position:relative; margin-top:18px; display:grid; grid-template-columns:1.1fr .9fr; gap:24px}
+    .hero{position:relative; margin-top:18px; display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:stretch}
     .card{background:linear-gradient(180deg, rgba(11,18,40,.8), rgba(11,18,40,.6)); border:1px solid rgba(120,160,220,.12); border-radius:var(--radius); box-shadow:0 30px 80px rgba(0,0,0,.35)}
-    .hero .card{padding:28px}
-    .kicker{display:inline-block; font-size:13px; color:#00121a; background:linear-gradient(90deg, var(--accent), #ff77cb); padding:6px 10px; border-radius:999px; font-weight:800; text-shadow:0 1px 0 rgba(255,255,255,.25)}
+    .hero .card{padding:28px; display:flex; flex-direction:column}
+    .kicker{display:block; width:fit-content; margin:0 auto 8px; text-align:center; font-size:13px; color:#00121a; background:linear-gradient(90deg, var(--accent), #ff77cb); padding:6px 10px; border-radius:999px; font-weight:800; text-shadow:0 1px 0 rgba(255,255,255,.25)}
     .title{margin:14px 0 10px 0; font-size:36px; line-height:1.08; text-wrap:balance; text-shadow:0 0 12px rgba(7,241,255,.18)}
     .subtitle{color:var(--muted); font-size:16px}
     .pills{display:flex; flex-wrap:wrap; gap:10px; margin:18px 0}
     .pill{font-size:13px; padding:8px 12px; border-radius:999px; background:rgba(7,241,255,.10); border:1px solid rgba(7,241,255,.25); box-shadow:var(--shadow)}
 
+    /* Row for primary CTAs in hero (desktop side-by-side) */
+    .cta-row{display:flex; gap:12px; flex-direction:column}
+    .cta-row .btn{white-space:nowrap; width:100%; justify-content:center}
+
     .panel{padding:22px}
     .panel h3{margin:0 0 10px 0; font-size:18px}
     .grid-3{display:grid; grid-template-columns:repeat(3, 1fr); gap:16px}
-    .grid-2{display:grid; grid-template-columns:repeat(2, 1fr); gap:16px}
+    .grid-2{display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; align-items:start} /* asegura alineación superior de ambas columnas */
 
     .neon-title{font-weight:800; letter-spacing:.4px; text-transform:uppercase; font-size:13px; color:var(--brand); filter:drop-shadow(0 0 10px rgba(7,241,255,.4))}
-    .neon-box{position:relative; border-radius:16px; padding:16px; background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid rgba(120,160,220,.12)}
-    .neon-box::before{content:""; position:absolute; inset:-1px; border-radius:17px; padding:1px; background:linear-gradient(120deg, rgba(7,241,255,.9), rgba(255,47,176,.9)); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; box-shadow:var(--shadow-accent)}
+    /* Tasks readability */
+    .task h4{font-size:18px}
+    .task p{color:var(--muted); margin:6px 0 8px}
+    .task ul{margin:0; padding-left:18px; line-height:1.75}
+    .task li{margin-bottom:6px}
+    .neon-box{position:relative; border-radius:16px; padding:16px; background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid rgba(120,160,220,.12); flex:1}
+    .neon-box::before{content:""; position:absolute; inset:-1px; border-radius:17px; padding:1px; background:linear-gradient(120deg, rgba(7,241,255,.9), rgba(255,47,176,.9)); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; box-shadow:var(--shadow-accent); pointer-events:none}
+
+    /* Right hero card: make content bigger and fill height */
+    .hero .card:last-child{padding:28px} /* alinea la parte superior con la tarjeta izquierda */
+    .hero .card:last-child .neon-box{display:flex; flex-direction:column; gap:16px; min-height:100%; padding:22px; border-radius:var(--radius); margin:0}
+    .hero .card:last-child .neon-box .neon-title{font-size:24px}
+    .hero .card:last-child .neon-box .badge{font-size:15px}
+    .hero .card:last-child .neon-box ul{font-size:18px; line-height:1.75; padding-left:22px; margin-top:6px}
+    .hero .card:last-child .neon-box li{margin-bottom:10px}
+    .hero .card:last-child .btn{margin-top:auto; align-self:flex-start}
 
     table{width:100%; border-collapse:collapse; overflow:hidden; border-radius:14px}
     th,td{padding:12px 14px; text-align:left; border-bottom:1px solid rgba(120,160,220,.12)}
@@ -85,7 +106,13 @@
     .tele-fab{position:fixed; right:18px; bottom:90px; z-index:60}
     .tele-fab a{display:inline-flex; align-items:center; gap:10px; padding:14px 16px; border-radius:999px; background:linear-gradient(90deg, #2aabee, #54c1f0); color:white; font-weight:900; box-shadow:0 12px 30px rgba(42,171,238,.4)}
 
-    footer{margin:40px 0 120px; color:var(--muted); font-size:13px}
+    footer{margin:40px 0 60px; color:var(--muted); font-size:13px} /* tighter footer spacing */
+
+    /* VIP block — bigger text and full-height fit */
+    #vip{display:flex; flex-direction:column; gap:14px; padding:24px; min-height:100%; margin-top:-20px; align-self:start} /* subido para alinear con el bloque izquierdo */ /* subido para alinear con el bloque izquierdo */ /* sube ligeramente el recuadro para que encaje con el título de la izquierda */
+    #vip h4{font-size:22px; margin:0}
+    #vip ul{font-size:18px; line-height:1.75; padding-left:20px; margin:6px 0 0}
+    #vip li{margin-bottom:8px}
 
     /* Tipografía profesional */
     h1,h2,h3,h4,.title,.logo h1{font-family:'Plus Jakarta Sans','Inter',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial}
@@ -100,21 +127,13 @@
     canvas#particles{position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.3}
     main, header, footer{position:relative; z-index:1}
     body{min-height:100vh}
-    main{padding-bottom:140px}
+    main{padding-bottom:90px} /* reduced bottom padding to remove extra whitespace */
 
     @media (max-width: 980px){
-      .hero{grid-template-columns:1fr}
-      .grid-3{grid-template-columns:1fr}
-      .grid-2{grid-template-columns:1fr}
-      .title{font-size:30px}
-      .logo img{height:64px}
-      nav{width:100%; display:flex; gap:8px; flex-wrap:wrap}
-      /* Fix mobile layout for badge + CTA + Telegram */
-      .badge{display:block; white-space:normal; line-height:1.5; padding:10px 12px}
-      .floating-cta{inset:auto 12px 12px 12px}
-      .floating-cta .bar{flex-direction:column; align-items:stretch; gap:10px}
-      .floating-cta .bar .btn{width:100%; justify-content:center}
-      .tele-fab{right:12px; bottom:180px}
+      /* en móvil evitamos el desplazamiento hacia arriba excesivo */
+      #vip{margin-top:0}
+      main{padding-bottom:120px}
+      footer{margin:32px 0 48px}
     }
   </style>
 </head>
@@ -146,7 +165,7 @@
           <span class="pill">Cupos limitados</span>
           <span class="pill">Código de referidos: <b>c5ubst</b> <button id="copyRef" class="btn btn-ghost" style="padding:6px 10px; font-size:12px">Copiar</button></span>
         </div>
-        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:8px">
+        <div class="cta-row" style="display:flex; gap:12px; flex-direction:column; margin-top:8px">
           <a class="btn btn-primary" target="_blank" rel="nofollow noopener" href="https://www.bitmart.com/es-ES/activity/ElPreciodelBitcoin6">REGISTRARME EN BITMART</a>
           <a class="btn btn-ghost" href="#pasos">Cómo entrar al VIP</a>
         </div>
@@ -170,17 +189,31 @@
     <section id="bonos" style="margin-top:28px" class="panel card">
       <h3 class="neon-title">Bonos oficiales de Bitmart para nuevos usuarios</h3>
       <div class="grid-3" style="margin-top:14px">
-        <div class="neon-box">
-          <h4 style="margin:0 0 6px 0">Tarea 1</h4>
-          <p style="margin:0; color:var(--muted)">Registrate y obtené <b>10 USDT</b> en bonos de futuros. <b>Limitado a los primeros 50 usuarios</b>.</p>
+        <div class="neon-box task">
+          <h4 style="margin:0 0 6px 0">Tarea 1 · Alta de cuenta</h4>
+          <p>Completa tu registro con mi enlace y presioná <b>“Unite ahora”</b> en la página del evento.</p>
+          <ul>
+            <li><b>Bono de bienvenida:</b> 10&nbsp;USDT en futuros.</li>
+            <li><b>Cupos:</b> limitado a los <b>primeros 50</b> usuarios.</li>
+          </ul>
         </div>
-        <div class="neon-box">
-          <h4 style="margin:0 0 6px 0">Tarea 2 · Recompensa por depósito</h4>
-          <p style="margin:0; color:var(--muted)">Durante el evento, depósitos netos califican para <b>hasta 3.000 USDT</b> en bonos. Niveles 1–3: <b>primeros 100</b> usuarios. Niveles 4–6: <b>primeros 50</b>. <b>KYC2 requerido en niveles 4–6</b>.</p>
+        <div class="neon-box task">
+          <h4 style="margin:0 0 6px 0">Tarea 2 · Depósito inicial</h4>
+          <p>Realizá tu <b>primer depósito neto</b> en la cuenta de futuros y recibí un bono según el tramo alcanzado.</p>
+          <ul>
+            <li><b>Recompensa máxima:</b> hasta 3.000&nbsp;USDT en bonos de futuros.</li>
+            <li><b>Cupos:</b> niveles 1–3 para <b>100</b> usuarios; niveles 4–6 para <b>50</b> usuarios.</li>
+            <li><b>Ver tabla</b> para importes por tramo. <b>KYC2</b> requerido en niveles 4–6.</li>
+          </ul>
         </div>
-        <div class="neon-box">
-          <h4 style="margin:0 0 6px 0">Tarea 3 · Volumen de trading</h4>
-          <p style="margin:0; color:var(--muted)">Al alcanzar volúmenes acumulados de futuros, obtené hasta <b>1.000 USDT</b> en bonos. <b>Limitado a los primeros 100</b> usuarios.</p>
+        <div class="neon-box task">
+          <h4 style="margin:0 0 6px 0">Tarea 3 · Volumen operado</h4>
+          <p>Al alcanzar volúmenes acumulados de trading de futuros, obtenés el bono correspondiente.</p>
+          <ul>
+            <li><b>Recompensa máxima:</b> hasta 1.000&nbsp;USDT en bonos de futuros.</li>
+            <li><b>Cupos:</b> limitado a los <b>primeros 100</b> usuarios.</li>
+            <li><b>Ver tabla</b> para objetivos y bonos. No acumulables entre niveles.</li>
+          </ul>
         </div>
       </div>
       <div style="height:16px"></div>
