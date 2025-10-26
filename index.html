@@ -163,43 +163,17 @@
     body{min-height:100vh}
     main{padding-bottom:90px} /* reduced bottom padding to remove extra whitespace */
 
-    @media (max-width: 980px){
-      /* layout base */
-      .wrap{padding:16px}
-      header .row{flex-wrap:wrap; gap:12px}
-      .logo img{height:72px}
-      nav{width:100%; justify-content:flex-start; gap:8px; overflow-x:auto; padding-bottom:6px}
-      nav .btn{padding:10px 12px; font-size:12px}
-
-      /* hero to single column */
-      .hero{grid-template-columns:1fr; gap:16px; margin-top:12px}
-      .hero .card{padding:18px}
-      .title{font-size:clamp(22px, 6vw, 28px); line-height:1.2}
-      .subtitle{font-size:14px}
-      .kicker{font-size:12px}
-
-      /* pills full width and consistent height */
-      .pills{gap:8px}
-      .pill{width:100%; height:40px; justify-content:center}
-      .copy-btn{height:34px}
-
-      /* right card spacing & list sizes */
-      .hero .card:last-child .neon-box{padding:18px}
-      .hero .card:last-child .neon-box .neon-title{font-size:20px}
-      .hero .card:last-child .neon-box ul{font-size:16px; line-height:1.7; padding-left:18px}
-      .btn-wide,.hero .card:last-child .btn{width:100%}
-
-      /* grids below to single column */
-      .grid-2{grid-template-columns:1fr; gap:14px}
-      .grid-3{grid-template-columns:1fr; gap:14px}
-      #vip{margin-top:0; padding:18px}
-      #vip h4{font-size:18px}
-      #vip ul{font-size:16px; line-height:1.7}
-
-      /* tables responsive */
+    @media (max-width: 980px){$1/* tables responsive */
       table{display:block; width:100%}
       thead, tbody, tr, th, td{white-space:nowrap}
       .panel > div[style*="overflow:auto"]{overflow:auto}
+
+      /* badges (eligibilidad + barra flotante) bien cuadradas en móvil */
+      .badge{display:block; width:100%; text-align:center; white-space:normal; line-height:1.5; padding:10px 12px}
+      .floating-cta .bar{flex-direction:column; align-items:stretch}
+      .floating-cta .bar > div{width:100%}
+      .floating-cta .bar .badge{margin:0}
+
 
       /* floating cta & telegram button */
       .floating-cta{left:12px; right:12px; bottom:calc(12px + env(safe-area-inset-bottom, 0px))}
