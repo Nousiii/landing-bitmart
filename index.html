@@ -31,6 +31,7 @@
     html,body{margin:0; padding:0; font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial; color:var(--txt); line-height:1.6; letter-spacing:.1px; font-feature-settings:'tnum' 1,'lnum' 1; font-variant-numeric: tabular-nums lining-nums; font-optical-sizing:auto; background:radial-gradient(1200px 700px at 75% -20%, rgba(7,241,255,.08), transparent),radial-gradient(900px 600px at -20% 20%, rgba(255,47,176,.08), transparent), var(--bg);}
     a{color:inherit; text-decoration:none}
     .wrap{max-width:1100px; margin:0 auto; padding:24px}
+    img{max-width:100%; height:auto; display:block}
     header{position:sticky; top:0; z-index:50; backdrop-filter:saturate(120%) blur(8px); background:linear-gradient(180deg, rgba(6,10,23,.85), rgba(6,10,23,.55)); border-bottom:1px solid rgba(120,160,220,.12)}
     header .row{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:nowrap}
     .logo{display:flex; align-items:center; gap:12px}
@@ -163,12 +164,56 @@
     main{padding-bottom:90px} /* reduced bottom padding to remove extra whitespace */
 
     @media (max-width: 980px){
-      /* eleva el FAB en móvil para no chocar con la barra flotante y centra el brillo */
-      .tele-fab{right:12px; bottom:180px}
-      .tele-fab a{box-shadow:0 6px 18px rgba(42,171,238,.35)}
-      .tele-fab a::after{inset:-12px; filter:blur(14px)}
-      main{padding-bottom:120px}
-      footer{margin:32px 0 48px}
+      /* layout base */
+      .wrap{padding:16px}
+      header .row{flex-wrap:wrap; gap:12px}
+      .logo img{height:72px}
+      nav{width:100%; justify-content:flex-start; gap:8px; overflow-x:auto; padding-bottom:6px}
+      nav .btn{padding:10px 12px; font-size:12px}
+
+      /* hero to single column */
+      .hero{grid-template-columns:1fr; gap:16px; margin-top:12px}
+      .hero .card{padding:18px}
+      .title{font-size:clamp(22px, 6vw, 28px); line-height:1.2}
+      .subtitle{font-size:14px}
+      .kicker{font-size:12px}
+
+      /* pills full width and consistent height */
+      .pills{gap:8px}
+      .pill{width:100%; height:40px; justify-content:center}
+      .copy-btn{height:34px}
+
+      /* right card spacing & list sizes */
+      .hero .card:last-child .neon-box{padding:18px}
+      .hero .card:last-child .neon-box .neon-title{font-size:20px}
+      .hero .card:last-child .neon-box ul{font-size:16px; line-height:1.7; padding-left:18px}
+      .btn-wide,.hero .card:last-child .btn{width:100%}
+
+      /* grids below to single column */
+      .grid-2{grid-template-columns:1fr; gap:14px}
+      .grid-3{grid-template-columns:1fr; gap:14px}
+      #vip{margin-top:0; padding:18px}
+      #vip h4{font-size:18px}
+      #vip ul{font-size:16px; line-height:1.7}
+
+      /* tables responsive */
+      table{display:block; width:100%}
+      thead, tbody, tr, th, td{white-space:nowrap}
+      .panel > div[style*="overflow:auto"]{overflow:auto}
+
+      /* floating cta & telegram button */
+      .floating-cta{left:12px; right:12px; bottom:calc(12px + env(safe-area-inset-bottom, 0px))}
+      .floating-cta .bar{padding:10px; gap:8px}
+      .floating-cta .bar .btn{flex:1}
+      .tele-fab{right:12px; bottom:180px; z-index:70}
+      .tele-fab a{padding:12px 14px; box-shadow:0 6px 18px rgba(42,171,238,.35)}
+      .tele-fab a::after{inset:-10px; filter:blur(14px)}
+
+      /* footer spacing */
+      footer{margin:28px 0 44px}
+
+      /* hide social bar on small to avoid tap overlap */
+      .social-bar{display:none}
     }
   </style>
 </head>
